@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');
+
+canvas {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 9vh);
+    box-shadow: 0 0 35px #999;
+}
+
+p {
+    font-family: "Abel", sans-serif;
+    font-size: 25px;
+    display: inline-block;
+}
+
+.statsContainer {
+    position: relative;
+    top: 95px;
+    width: 260px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#score {
+    float: left;
+}
+
+#best {
+    float: right;
+}
