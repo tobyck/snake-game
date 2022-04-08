@@ -108,6 +108,17 @@ function newGame() {
         // check if the snake is dead
         if (snake[0].x < 0 || snake[0].x > box.count || snake[0].y < 0 || snake[0].y > box.count || snake.slice(1).map(x => Object.values(x).toString()).includes(Object.values(snake[0]).toString())) {
             clearInterval(gameLoop);
+            if (score == best) {
+                alert(`New highscore of ${score}!\n\nPress OK to play again.`);
+            } else {
+                alert(`You scored ${score}.\n\nPress OK to play again.`);
+            }
+            newGame();
+        }
+
+        if (snake.length >= box.count ** 2) {
+            clearInterval(gameLoop);
+            alert("You won!\n\nPress OK to play again.");
             newGame();
         }
     }
