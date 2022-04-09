@@ -29,7 +29,6 @@ function newGame() {
     // other variables
     var direction = "right",
         lastDirection = "left",
-        speed = 10,
         started = false,
         score = 0,
         best = parseInt(localStorage.getItem("best")) || 0;
@@ -116,13 +115,6 @@ function newGame() {
             clearInterval(gameLoop);
             setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 600)
         }
-
-        // check if the player has beaten the game by covering the board
-        if (snake.length >= box.count ** 2) {
-            clearInterval(gameLoop);
-            alert("You won!\n\nPress OK to play again.");
-            newGame();
-        }
     }
 
     // update score
@@ -146,7 +138,7 @@ function newGame() {
 
         if (!started && ["w", "s", "d", "arrowup", "arrowdown", "arrowright"].includes(event.key.toLowerCase())) {
             started = true;
-            gameLoop = setInterval(update, 1000 / speed);
+            gameLoop = setInterval(update, 1000 / Math.ceil((20 - ((score - 60) ** 2) / 350) - 1));
         }
     });
 }
