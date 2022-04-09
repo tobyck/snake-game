@@ -113,7 +113,7 @@ function newGame() {
         // check if the snake is dead
         if (snake[0].x < 1 || snake[0].x > box.count || snake[0].y < 1 || snake[0].y > box.count || snake.slice(1).map(x => Object.values(x).toString()).includes(Object.values(snake[0]).toString())) {
             clearInterval(gameLoop);
-            setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 600)
+            setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 1000)
         }
     }
 
