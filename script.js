@@ -149,7 +149,7 @@ function newGame() {
 
         if (!started && ["w", "a", "s", "d", "arrowup", "arrowleft", "arrowdown", "arrowright"].includes(key)) {
             started = true;
-            gameLoop = setInterval(update, 1000 / (9 + ((snake.length - 5) / 3)));
+            gameLoop = setInterval(update, 1000 / ((score / 30) * 7 + 9));
         }
     });
 }
