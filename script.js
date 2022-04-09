@@ -113,7 +113,7 @@ function newGame() {
         // check if the snake is dead
         if (snake[0].x < 1 || snake[0].x > box.count || snake[0].y < 1 || snake[0].y > box.count || snake.slice(1).map(x => Object.values(x).toString()).includes(Object.values(snake[0]).toString())) {
             clearInterval(gameLoop);
-            setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 1000)
+            setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 1500)
         }
     }
 
@@ -136,7 +136,7 @@ function newGame() {
         if (["s", "arrowdown"].includes(key) && lastDirection != "up") direction = "down";
         if (["d", "arrowright"].includes(key) && lastDirection != "left") direction = "right";
 
-        if (!started && ["w", "s", "d", "arrowup", "arrowdown", "arrowright"].includes(event.key.toLowerCase())) {
+        if (!started && !messageShowing && ["w", "s", "d", "arrowup", "arrowdown", "arrowright"].includes(event.key.toLowerCase())) {
             started = true;
             gameLoop = setInterval(update, 1000 / Math.ceil((20 - ((score - 60) ** 2) / 350) - 1));
         }
@@ -144,11 +144,13 @@ function newGame() {
 }
 
 // game over message function
+var messageShowing = false;
 function message(message) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     document.getElementById("messageContainer").hidden = false;
     document.getElementById("message").innerText = message;
+    messageShowing = true;
 
     document.onkeydown = event => {
         if (event.key == "Enter" || event.key == " ") {
