@@ -1,25 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');
 
 canvas {
-    position: relative;
-    top: 50%;
+    position: fixed;
+    top: 10%;
     left: 50%;
-    transform: translate(-50%, 9vh);
+    transform: translateX(-50%);
     box-shadow: 0 0 35px #999;
 }
 
-p {
-    font-family: "Abel", sans-serif;
-    font-size: 25px;
-    display: inline-block;
-}
-
-.statsContainer {
-    position: relative;
-    top: 95px;
+.container {
+    position: fixed;
+    bottom: 27px;
     width: 260px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+#messageContainer {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+}
+
+p, button {
+    font-family: "Abel", sans-serif;
+    font-size: 25px;
+    background: none;
+    border: none;
+    outline: none;
+    display: inline-block;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 #score {

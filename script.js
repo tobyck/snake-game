@@ -2,20 +2,20 @@
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 
+// settings for how the boxes will look
+var box = {
+    size: 20,
+    padding: 3,
+    count: 20 
+}
+
 // new game function
 function newGame() {
-    // settings for how the boxes will look
-    var box = {
-        size: 20,
-        padding: 3,
-        count: 20
-    }
-
     // starting position and length of the snake
     var snake = [];
     for (var i = 0; i < 5; i++) {
         snake.push({
-            x: ~~(box.count / 2) - i - 1,
+            x: ~~(box.count / 2) - i,
             y: Math.ceil(box.count / 2)
         });
     }
@@ -28,11 +28,13 @@ function newGame() {
 
     // other variables
     var direction = "right",
+        lastDirection = "left",
+        speed = 10,
         started = false,
         score = 0,
         best = parseInt(localStorage.getItem("best")) || 0;
 
-    // size the canvas
+    // size elements for responsive design
     canvas.width = canvas.height = box.count * (box.size + box.padding) + box.padding;
 
     // render the game at the start
@@ -63,6 +65,15 @@ function newGame() {
         ctx.fillStyle = "#f23232";
         ctx.fillRect(food.x * (box.size + box.padding) - box.size, food.y * (box.size + box.padding) - box.size, box.size, box.size)
 
+        // render the snake
+        ctx.fillStyle = "#539c44";
+        for (snakeBox of snake) {
+            if (snake.indexOf(snakeBox) > 0) {
+                ctx.fillStyle = "#59c942";
+            }
+            ctx.fillRect(snakeBox.x * (box.size + box.padding) - box.size, snakeBox.y * (box.size + box.padding) - box.size, box.size, box.size)
+        }
+
         // update the snake
         if (direction == "up") {
             snake.unshift({
@@ -87,12 +98,7 @@ function newGame() {
         }
 
         snake.pop();
-
-        // render the snake
-        ctx.fillStyle = "#59c942";
-        for (snakeBox of snake) {
-            ctx.fillRect(snakeBox.x * (box.size + box.padding) - box.size, snakeBox.y * (box.size + box.padding) - box.size, box.size, box.size)
-        }
+        lastDirection = direction;
 
         // check if the snake has eaten food
         if (snake[0].x == food.x && snake[0].y == food.y) {
@@ -106,16 +112,12 @@ function newGame() {
         }
 
         // check if the snake is dead
-        if (snake[0].x < 0 || snake[0].x > box.count || snake[0].y < 0 || snake[0].y > box.count || snake.slice(1).map(x => Object.values(x).toString()).includes(Object.values(snake[0]).toString())) {
+        if (snake[0].x < 1 || snake[0].x > box.count || snake[0].y < 1 || snake[0].y > box.count || snake.slice(1).map(x => Object.values(x).toString()).includes(Object.values(snake[0]).toString())) {
             clearInterval(gameLoop);
-            if (score == best) {
-                alert(`New highscore of ${score}!\n\nPress OK to play again.`);
-            } else {
-                alert(`You scored ${score}.\n\nPress OK to play again.`);
-            }
-            newGame();
+            setTimeout(() => message(`Game over.\n\nScore: ${score}\nBest: ${best}\n\nPress enter or space, or click anywhere outside of this box to play again.`), 600)
         }
 
+        // check if the player has beaten the game by covering the board
         if (snake.length >= box.count ** 2) {
             clearInterval(gameLoop);
             alert("You won!\n\nPress OK to play again.");
@@ -123,7 +125,7 @@ function newGame() {
         }
     }
 
-    // update score and best
+    // update score
     function renderStats() {
         if (score > best) {
             best = score;
@@ -137,21 +139,38 @@ function newGame() {
     // handle key presses to control the snake
     document.addEventListener("keydown", event => {
         var key = event.key.toLowerCase();
-        if (["w", "arrowup"].includes(key)) {
-            if (direction != "down") direction = "up";
-        } else if (["a", "arrowleft"].includes(key)) {
-            if (direction != "right") direction = "left";
-        } else if (["s", "arrowdown"].includes(key)) {
-            if (direction != "up") direction = "down";
-        } else if (["d", "arrowright"].includes(key)) {
-            if (direction != "left") direction = "right";
-        }
+        if (["w", "arrowup"].includes(key) && lastDirection != "down") direction = "up";
+        if (["a", "arrowleft"].includes(key) && lastDirection != "right") direction = "left";
+        if (["s", "arrowdown"].includes(key) && lastDirection != "up") direction = "down";
+        if (["d", "arrowright"].includes(key) && lastDirection != "left") direction = "right";
 
-        if (!started && ["w", "a", "s", "d", "arrowup", "arrowleft", "arrowdown", "arrowright"].includes(key)) {
+        if (!started && ["w", "s", "d", "arrowup", "arrowdown", "arrowright"].includes(event.key.toLowerCase())) {
             started = true;
-            gameLoop = setInterval(update, 1000 / ((score / 30) * 7 + 9));
+            gameLoop = setInterval(update, 1000 / speed);
         }
     });
+}
+
+// game over message function
+function message(message) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    document.getElementById("messageContainer").hidden = false;
+    document.getElementById("message").innerText = message;
+
+    document.onkeydown = event => {
+        if (event.key == "Enter" || event.key == " ") {
+            document.getElementById("messageContainer").hidden = true;
+            newGame();
+        }
+    }
+
+    document.onclick = event => {
+        if (event.target.tagName != "CANVAS") {
+            document.getElementById("messageContainer").hidden = true;
+            newGame();
+        }
+    }
 }
 
 newGame();
