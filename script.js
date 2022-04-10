@@ -155,6 +155,7 @@ function message(message) {
     document.onkeydown = event => {
         if (event.key == "Enter" || event.key == " ") {
             document.getElementById("messageContainer").hidden = true;
+            document.onkeydown = null;
             newGame();
         }
     }
@@ -162,6 +163,7 @@ function message(message) {
     document.onclick = event => {
         if (event.target.tagName != "CANVAS") {
             document.getElementById("messageContainer").hidden = true;
+            document.onclick = null;
             newGame();
         }
     }
